@@ -32,10 +32,10 @@ private static NumberFormat nf = new DecimalFormat("00");
 
     @Override
     public int run(String[] args) throws Exception {
-        boolean isCompleted = runXmlParsing("/csg/enwiki-20210401-pages-articles-multistream.xml", "/csg/ranking/iter00");
+        boolean isCompleted = runXmlParsing("/csg/enwiki-latest-pages-articles-multistream21.xml-p35522433p37022432", "/csg/ranking/iter00");
         if (!isCompleted) return 1;
 
-        String lastResultPath = null;
+        String lastResultPath = "/csg/ranking/iter00";
 
         for (int runs = 0; runs < 5; runs++) {
             String inPath = "/csg/ranking/iter" + nf.format(runs);
