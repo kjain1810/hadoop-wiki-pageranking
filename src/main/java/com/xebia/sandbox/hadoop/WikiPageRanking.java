@@ -23,31 +23,30 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-public class WikiPageRanking extends Configured implements Tool {
+class Temp extends Configured implements Tool {
+private static NumberFormat nf = new DecimalFormat("00");
 
-    private static NumberFormat nf = new DecimalFormat("00");
-
-    public static void main(String[] args) throws Exception {
-        System.exit(ToolRunner.run(new Configuration(), new WikiPageRanking(), args));
+    public void caller(String[] args) throws Exception {
+        System.exit(ToolRunner.run(new Configuration(), new Temp(), args));
     }
 
     @Override
     public int run(String[] args) throws Exception {
-        boolean isCompleted = runXmlParsing("wiki/in", "wiki/ranking/iter00");
+        boolean isCompleted = runXmlParsing("/csg/enwiki-20210401-pages-articles-multistream.xml", "/csg/ranking/iter00");
         if (!isCompleted) return 1;
 
         String lastResultPath = null;
 
         for (int runs = 0; runs < 5; runs++) {
-            String inPath = "wiki/ranking/iter" + nf.format(runs);
-            lastResultPath = "wiki/ranking/iter" + nf.format(runs + 1);
+            String inPath = "/csg/ranking/iter" + nf.format(runs);
+            lastResultPath = "/csg/ranking/iter" + nf.format(runs + 1);
 
             isCompleted = runRankCalculation(inPath, lastResultPath);
 
             if (!isCompleted) return 1;
         }
 
-        isCompleted = runRankOrdering(lastResultPath, "wiki/result");
+        isCompleted = runRankOrdering(lastResultPath, "/csg/result");
 
         if (!isCompleted) return 1;
         return 0;
@@ -115,6 +114,15 @@ public class WikiPageRanking extends Configured implements Tool {
         rankOrdering.setOutputFormatClass(TextOutputFormat.class);
 
         return rankOrdering.waitForCompletion(true);
+    }
+}
+
+public class WikiPageRanking {
+
+    public static void main(String[] args) throws Exception {
+        // System.exit(ToolRunner.run(new Configuration(), new WikiPageRanking(), args));
+        Temp temp = new Temp();
+        temp.caller(args);
     }
 
 }
